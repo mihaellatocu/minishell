@@ -11,6 +11,7 @@ SRCS	= src/minishell.c \
 			src/redirections1.c \
 			src/list_init_file.c \
 			src/1.parsing.c \
+			src/signals.c \
 			#src/create_cmd.s
 
 
