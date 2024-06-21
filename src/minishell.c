@@ -158,7 +158,9 @@ int main(int argc, char **argv, char **envp)
 {
 	t_shell p;
 	char *line;
+
 	init(&p, envp, argc, argv);
+	setup_signal_handlers();
 	while(1)
 	{
 		line = readline("minishell>> ");
@@ -166,6 +168,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			//ft_putstr_fd("ex\n", STDOUT_FILENO);
 			;//break ;
+			handle_eof();
 		}
 		add_history(line);
 		p.token_list = split_into_tokens(line, &p);
@@ -184,6 +187,7 @@ int main(int argc, char **argv, char **envp)
 		//print_env(p.envir);
 	   }
 	free_allocation_malloc_env(&p.envir);
+	free(line);
 	
 	return (0);
 }

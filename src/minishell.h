@@ -22,6 +22,7 @@
 # include <readline/history.h>
 # include <sys/types.h>
 # include <stdbool.h>
+#include <signal.h>
 # include "../lib/libft.h"
 
 
@@ -134,5 +135,8 @@ bool		is_infile_redirection(t_lst *current);
 bool		is_outfile_redirection(t_lst *current);
 void		print_list_cmd(t_lst *nodes);
 
+/*Signals*/
+void setup_signal_handlers(void);
+void handle_eof(void);
 
 #endif
