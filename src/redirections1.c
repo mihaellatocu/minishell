@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:24:28 by mtocu             #+#    #+#             */
-/*   Updated: 2024/06/19 13:31:54 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/06/21 13:44:48 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	handle_redirection(t_lst *cmd, t_lst *node, int type)
 
 /*Once a redirection is found, this function search for the closer command
 	to assign the redirection*/
-t_lst	*find_closer_command(t_lst *command) // to be corrected
+t_lst	*find_closer_command(t_lst *command) 
 {
 	t_lst *current;
 

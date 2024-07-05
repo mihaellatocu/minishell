@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 17:26:30 by mtocu             #+#    #+#             */
-/*   Updated: 2024/06/19 15:40:37 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/03 16:30:54 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,25 @@ void	lstadd_back(t_lst **lst, t_lst *new)
 	new->prev = current;
 }
 
+int	count_cmd(t_lst	*nodes)
+{
+	t_lst	*current;
+	int		count;
+
+	current = nodes;
+	count = 0;
+	while(current != NULL)
+	{
+		if (current->type == CMD)
+			count++;
+		else if( current->token == PIPE) // is not working because I am not passing &
+			current->remove = true;
+		current = current->next;
+	}
+	return (count);
+}
+
+
 void	print_list(t_lst *nodes)
 {
 	t_lst	*current;
@@ -59,7 +78,7 @@ void	print_list(t_lst *nodes)
 	printf("--------------------------------------------\n");
 	while (current != NULL)
 	{
-		if (current->token == WORD)
+		if (current->token == WORD || current->token == SQUOTE || current->token == DQUOTE)
 		{
 			printf("token content word type: %s\n", current->content);
 			printf("token  type: %u\n", current->token);
@@ -93,7 +112,7 @@ void	print_files(t_file *file)
 	}
 }
 
-void	print_list_cmd(t_lst *nodes)
+ void	print_list_cmd(t_lst *nodes)
 {
 	t_lst	*current;
 
@@ -113,6 +132,8 @@ void	print_list_cmd(t_lst *nodes)
 			if (current->outfile != NULL)
 				print_files(current->outfile);
 		}
+		else if( current->token == PIPE)
+			printf("current token %d\n", current->token);
 		current = current->next;
 	}
 }
@@ -124,10 +145,8 @@ void	print_env(t_env_list *nodes)
 	while(current != NULL)
 	{
 		if (current->value != NULL)
-			printf("Env:  %s\n", current->value);
-		
+			printf("%s=%s\n", current->key, current->value);
 		current = current->next;
 	}
-	//printf("Home env: %s\n", getenv("PATH"));
 }
 

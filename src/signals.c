@@ -3,18 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antestem <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 14:46:47 by antestem          #+#    #+#             */
-/*   Updated: 2024/06/20 14:46:48 by antestem         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:12:50 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "minishell.h"
 
 void handle_sigint(int sig)
@@ -22,7 +17,8 @@ void handle_sigint(int sig)
     (void)sig;
     // Move to a new line and redisplay the prompt
     rl_replace_line("", 0);  // Clear the input line
-    rl_on_new_line();        // Move the cursor to a new line
+    printf("\n");
+	rl_on_new_line();      // Move the cursor to a new line
     rl_redisplay();          // Redisplay the prompt
 }
 

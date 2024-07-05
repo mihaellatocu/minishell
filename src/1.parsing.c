@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   1.parsing.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/20 13:20:04 by mtocu             #+#    #+#             */
+/*   Updated: 2024/07/05 11:31:22 by mtocu            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 /*This function return the operator that is found*/
@@ -43,10 +55,10 @@ char *find_word(char *line, size_t *i, t_token token)
 	else
 	{
 		start++;
-		while(line[++(*i) != (char)token])
+		while(line[++(*i)] != (char)token)
 			;
 	}
-	word = malloc((char)(*i - start + 2) * sizeof(char));
+	word = (char *)malloc((*i - start + 2) * sizeof(char));
 	// if (!word) // to be added
 	// 	error(1);
 	// printf("%zu ", start);
@@ -63,24 +75,24 @@ char *find_word(char *line, size_t *i, t_token token)
 t_lst  *split_into_tokens(char *line, t_shell *p) //split the line in words and tokens, wc -l | ls -> 4 tokens
 {
 	size_t i;
-	int length;
+	size_t length;
 
 	i = -1;
 	length = ft_strlen(line);
+	
 	while (++i < length)
 	{
 		if (line[i] == '|' || line[i] == '<' || line[i] == '>')
 			lstadd_back(&p->token_list, lstnew(NULL, find_token(line, &i)));
-		
 		else if (line[i] == '\'')
-			lstadd_back(&p->token_list, lstnew(NULL, SQUOTE));
+			lstadd_back(&p->token_list, lstnew(find_word(line, &i, SQUOTE), SQUOTE));
 		else if (line[i] == '\"')
-			lstadd_back(&p->token_list, lstnew(NULL, DQUOTE));
+			lstadd_back(&p->token_list, lstnew(find_word(line, &i, DQUOTE), DQUOTE));
 		else if(ft_isalnum(line[i]) || line[i] == '-' || line[i] == '.' || line[i] == '=' ||
-			line[i] == '/' || line[i] == '$' || line[i] == '*')
+			line[i] == '/' || line[i] == '$' || line[i] == '*' || line[i] == '_')
 			lstadd_back(&p->token_list, lstnew(find_word(line, &i, WORD), WORD));
-		//printf("%zu\n", i);
 	}	
+	
 	return (p->token_list);
 }
 
@@ -108,12 +120,11 @@ void	manage_input(t_shell *p) // create a list of arguments on each node , and m
 	current_node = p->token_list; // inceputul listei
 	while (current_node != NULL) 
 	{
-
-		if (current_node->token == WORD)
+		if (current_node->token == WORD || current_node->token == SQUOTE || current_node->token == DQUOTE)
 		{
 			start_node = current_node;
 			arg_count = get_arg_count(start_node);
-			// printf("nr de args:    %d\n", arg_count);
+			//  printf("nr de args:    %d\n", arg_count);
 
 			start_node->args = malloc(sizeof(char *) * (arg_count + 1));
 			if (!start_node->args)

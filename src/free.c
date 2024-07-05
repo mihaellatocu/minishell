@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/20 13:19:41 by mtocu             #+#    #+#             */
+/*   Updated: 2024/07/04 15:02:04 by mtocu            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 void	free_arg_contents(char **args) // free arr or arguments
 {
@@ -52,9 +64,6 @@ void	free_allocation_malloc(t_lst **nodes, char *line) // free all nodes of toke
 	if(line != NULL)
 		free(line);
 }
-
-
-
 
 void	free_allocation_malloc_env(t_env_list **nodes) // free env list
 {

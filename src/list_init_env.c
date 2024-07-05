@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:23:34 by mtocu             #+#    #+#             */
-/*   Updated: 2024/06/19 11:56:59 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/03 15:18:55 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,10 @@ void init(t_shell *p, char **envp, int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	p->token_list = NULL;
-	p->error = false;
+	p->error = false; // for export cmd
 	p->envir = NULL;
+	p->run = true;
+	p->command_status = 0;
 	
 	if(envp)
 		init_env(p, envp);

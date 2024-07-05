@@ -47,12 +47,7 @@ void	execute(char *argv, char **envp)
 		error();
 }
 
-void	initiate(t_state *p, int argc, char **argv, char **envp)
-{
-	p->argv = argv;
-	p->argc = argc;
-	p->envp = envp;
-}
+
 
 // void	ft_error(const char *message)
 // {

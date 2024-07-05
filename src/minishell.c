@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:23:58 by mtocu             #+#    #+#             */
-/*   Updated: 2024/06/19 15:44:57 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/05 16:09:35 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,11 +157,11 @@
 int main(int argc, char **argv, char **envp)
 {
 	t_shell p;
-	char *line;
 
+	char *line;
 	init(&p, envp, argc, argv);
 	setup_signal_handlers();
-	while(1)
+	while(p.run == true)
 	{
 		line = readline("minishell>> ");
 		if (line == NULL)
@@ -172,6 +172,9 @@ int main(int argc, char **argv, char **envp)
 		}
 		add_history(line);
 		p.token_list = split_into_tokens(line, &p);
+
+		find_dollar_sign_and_replace(&p);
+		//print_list(p.token_list);
 		
 		set_command_structure(p.token_list, false); // divide the input to operations cmd and ar
 		
@@ -179,15 +182,20 @@ int main(int argc, char **argv, char **envp)
 		cleaning_args(&p.token_list); // use after find redirection is enabled
 		
 		manage_input(&p);// separate CMD from ARGs and remove the nodes from ARGs
+		
 		cleaning_args(&p.token_list);
 
 		print_list_cmd(p.token_list);
-		
-		free_allocation_malloc(&p.token_list, line);
+		count_cmd(p.token_list); // removing pipes
+		cleaning_args(&p.token_list);
+		execute(&p);
+		//printf("+++++++++++++++++++++\n");
+		//print_list_cmd(p.token_list);
 		//print_env(p.envir);
+		free_allocation_malloc(&p.token_list, line);
+		
 	   }
 	free_allocation_malloc_env(&p.envir);
-	free(line);
 	
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:23:45 by mtocu             #+#    #+#             */
-/*   Updated: 2024/06/19 12:55:08 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/06/28 15:07:58 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /*Functions that manage the list of infiles and outfiles*/
 t_file	*file_lstnew(t_token token, char *name, int fd)
-{
+{(void)fd;
 	t_file	*file_list;
 
 	file_list = (t_file *)malloc(sizeof(t_file));

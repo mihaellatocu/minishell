@@ -1,6 +1,6 @@
 NAME	= minishell
 CC		= cc -g
-#CFLAGS	= -Wall -Wextra -Werror
+CFLAGS	= -Wall -Wextra -Werror
 RM			= rm -rf
 
 SRCS	= src/minishell.c \
@@ -9,8 +9,12 @@ SRCS	= src/minishell.c \
 			src/list_init_env.c \
 			src/redirections.c \
 			src/redirections1.c \
+			src/redirections2_dollar.c \
 			src/list_init_file.c \
 			src/1.parsing.c \
+			src/execute1.c src/execute2.c src/execute3_cd.c src/execute4_pwd.c \
+			src/execute5_exit.c src/execute6_env_unset.c  src/execute7_export.c \
+			src/execute8_echo.c \
 			src/signals.c \
 			#src/create_cmd.s
 

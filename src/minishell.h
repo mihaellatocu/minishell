@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:24:07 by mtocu             #+#    #+#             */
-/*   Updated: 2024/06/19 15:55:08 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/05 16:06:54 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include <readline/history.h>
 # include <sys/types.h>
 # include <stdbool.h>
-#include <signal.h>
 # include "../lib/libft.h"
+# include <signal.h>
 
 
 typedef enum e_token
@@ -85,17 +85,19 @@ typedef struct s_env_list
 
 typedef struct s_shell // stuctura
 {
-	char				prompt[128];
-	char				*input; // not used yet
-	char				*cwd[1024]; // current working directory
+	//char				prompt[128];
+	//char				*input; // not used yet
+	//char				*cwd[1024]; // current working directory
 	pid_t				pid;
 	int					fd[2];
 	int					fd_in;
 	int					fd_out;
+	bool				run;
 	t_lst				*token_list; // linked lists of tokens
 	t_env_list			*envir; //lists of environments
 
 	bool				error;
+	int					command_status;
 	
 }				t_shell;
 
@@ -117,6 +119,7 @@ void		cleaning_args(t_lst **nodes);
 
 //void	init_env(t_shell *p, char **envp); // init env list
 t_env_list	*env_lstnew(char *value, char *key);
+void		env_lstadd_back(t_env_list **lst, t_env_list *new);
 void		free_allocation_malloc_env(t_env_list **nodes); // free all env
 void		print_list(t_lst *nodes);
 void		print_env(t_env_list *nodes);
@@ -135,8 +138,28 @@ bool		is_infile_redirection(t_lst *current);
 bool		is_outfile_redirection(t_lst *current);
 void		print_list_cmd(t_lst *nodes);
 
-/*Signals*/
-void setup_signal_handlers(void);
-void handle_eof(void);
+int			count_cmd(t_lst	*nodes);
+
+//execute functions
+void	execute(t_shell *p);
+int		handle_build_in(t_shell *p, t_lst *command);
+char	*find_home_env(t_shell *p);
+int		count_args(char	**args_from_a_node);
+int		handle_cd_cmd(t_shell *p, t_lst *cmd);
+
+bool	is_only_one_cmd(t_lst *node);
+int		handle_pwd_cmd(t_shell *p, t_lst *cmd);
+int		handle_exit_cmd(t_shell *p, t_lst *cmd);
+int		handle_env_cmd(t_shell *p, t_lst *cmd);
+int		handle_unset_cmd(t_shell *p, t_lst *cmd);
+int 	handle_export_cmd(t_shell *p, t_lst *cmd);
+int		handle_echo_cmd(t_shell *p, t_lst *cmd);
+
+
+void  find_dollar_sign_and_replace(t_shell *p);
+
+//signals
+void	setup_signal_handlers(void);
+void	handle_eof(void);
 
 #endif
