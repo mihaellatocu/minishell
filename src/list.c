@@ -6,13 +6,11 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 17:26:30 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/03 16:30:54 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/05 19:59:37 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 
 /*Creating the list of tokens*/
 t_lst	*lstnew(char *content, t_token token)
@@ -58,30 +56,30 @@ int	count_cmd(t_lst	*nodes)
 
 	current = nodes;
 	count = 0;
-	while(current != NULL)
+	while (current != NULL)
 	{
 		if (current->type == CMD)
 			count++;
-		else if( current->token == PIPE) // is not working because I am not passing &
+		else if (current->token == PIPE)
 			current->remove = true;
 		current = current->next;
 	}
 	return (count);
 }
 
-
 void	print_list(t_lst *nodes)
 {
 	t_lst	*current;
+	int		i;
 
 	current = nodes;
-	printf("--------------------------------------------\n");
 	while (current != NULL)
 	{
-		if (current->token == WORD || current->token == SQUOTE || current->token == DQUOTE)
+		if (current->token == WORD || current->token == SQUOTE
+			|| current->token == DQUOTE)
 		{
 			printf("token content word type: %s\n", current->content);
-			printf("token  type: %u\n", current->token);
+			printf("token type: %u\n", current->token);
 			printf("Operator type: %i\n", current->type);
 		}
 		else
@@ -89,19 +87,17 @@ void	print_list(t_lst *nodes)
 			printf("token type : %i\n", current->token);
 			printf("Operator type: %i\n", current->type);
 		}
-		int i = -1;
+		i = -1;
 		if (current->args != NULL)
 			while (current->args[++i] != NULL)
 				printf("   args: %s\n", current->args[i]);
-		printf("--------------------------------------------\n");
 		current = current->next;
 	}
-	
 }
 
 void	print_files(t_file *file)
 {
-	t_file *current;
+	t_file	*current;
 
 	current = file;
 	while (current != NULL)
@@ -112,18 +108,18 @@ void	print_files(t_file *file)
 	}
 }
 
- void	print_list_cmd(t_lst *nodes)
+void	print_list_cmd(t_lst *nodes)
 {
 	t_lst	*current;
+	int		i;
 
 	current = nodes;
-	printf("--------------------------------------------\n");
 	while (current != NULL)
 	{
 		if (current->type == CMD)
 		{
 			printf("CMD = %s\n", current->content);
-			int i = -1;
+			i = -1;
 			if (current->args != NULL)
 				while (current->args[++i] != NULL)
 					printf("   args: %s\n", current->args[i]);
@@ -132,21 +128,21 @@ void	print_files(t_file *file)
 			if (current->outfile != NULL)
 				print_files(current->outfile);
 		}
-		else if( current->token == PIPE)
+		else if (current->token == PIPE)
 			printf("current token %d\n", current->token);
 		current = current->next;
 	}
 }
+
 void	print_env(t_env_list *nodes)
 {
 	t_env_list	*current;
-	
+
 	current = nodes;
-	while(current != NULL)
+	while (current != NULL)
 	{
 		if (current->value != NULL)
 			printf("%s=%s\n", current->key, current->value);
 		current = current->next;
 	}
 }
-

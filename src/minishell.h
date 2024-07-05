@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:24:07 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/05 16:06:54 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/05 19:52:56 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 # include "../lib/libft.h"
 # include <signal.h>
 
-
 typedef enum e_token
 {
 	VAR ,
@@ -39,7 +38,6 @@ typedef enum e_token
 	DQUOTE = '\"',
 	O_BRAKET = '(',
 	C_BRAKET = ')',
-
 }	t_token;
 
 typedef enum e_cmd_structure
@@ -53,22 +51,22 @@ typedef enum e_cmd_structure
 
 typedef struct s_file
 {
-	int		fd;
-	char	*name; // name of the file
-	t_token	token;
-	struct s_file *next;
-	struct s_file *prev;
+	int				fd;
+	char			*name; // name of the file
+	t_token			token;
+	struct s_file	*next;
+	struct s_file	*prev;
 }			t_file;
 
 typedef struct s_lst //linked lists of tokens and args
 {
 	char				*content;
 	t_token				token; //enum tokens
-	t_cmd_structure		type;  //enum operators 
+	t_cmd_structure		type;//enum operators 
 	t_file				*infile;
 	t_file				*outfile;
 	struct s_lst		*next;
-	struct s_lst 		*prev;
+	struct s_lst		*prev;
 	char				**args;
 	bool				remove;
 }						t_lst;
@@ -95,15 +93,12 @@ typedef struct s_shell // stuctura
 	bool				run;
 	t_lst				*token_list; // linked lists of tokens
 	t_env_list			*envir; //lists of environments
-
 	bool				error;
 	int					command_status;
-	
 }				t_shell;
 
-
 void		init(t_shell *p, char **envp, int argc, char **argv);
-t_lst 		*split_into_tokens(char *line, t_shell *p);
+t_lst		*split_into_tokens(char *line, t_shell *p);
 void		manage_input(t_shell *p);
 
 // char		*find_path(char *cmd, char **envp);
@@ -120,10 +115,12 @@ void		cleaning_args(t_lst **nodes);
 //void	init_env(t_shell *p, char **envp); // init env list
 t_env_list	*env_lstnew(char *value, char *key);
 void		env_lstadd_back(t_env_list **lst, t_env_list *new);
-void		free_allocation_malloc_env(t_env_list **nodes); // free all env
+void		free_allocation_malloc_env(t_env_list **nodes);
 void		print_list(t_lst *nodes);
 void		print_env(t_env_list *nodes);
-void		set_command_structure(t_lst *node, bool found_cmd); //find CMD ARG and Operators for INFILE and OUTFILE
+
+/*find CMD ARG and Operators for INFILE and OUTFILE*/
+void		set_command_structure(t_lst *node, bool found_cmd);
 
 void		find_redirections(t_lst *node);
 int			assign_redirection(t_lst *node, t_lst *command);
@@ -141,25 +138,24 @@ void		print_list_cmd(t_lst *nodes);
 int			count_cmd(t_lst	*nodes);
 
 //execute functions
-void	execute(t_shell *p);
-int		handle_build_in(t_shell *p, t_lst *command);
-char	*find_home_env(t_shell *p);
-int		count_args(char	**args_from_a_node);
-int		handle_cd_cmd(t_shell *p, t_lst *cmd);
+void		execute(t_shell *p);
+int			handle_build_in(t_shell *p, t_lst *command);
+char		*find_home_env(t_shell *p);
+int			count_args(char	**args_from_a_node);
+int			handle_cd_cmd(t_shell *p, t_lst *cmd);
 
-bool	is_only_one_cmd(t_lst *node);
-int		handle_pwd_cmd(t_shell *p, t_lst *cmd);
-int		handle_exit_cmd(t_shell *p, t_lst *cmd);
-int		handle_env_cmd(t_shell *p, t_lst *cmd);
-int		handle_unset_cmd(t_shell *p, t_lst *cmd);
-int 	handle_export_cmd(t_shell *p, t_lst *cmd);
-int		handle_echo_cmd(t_shell *p, t_lst *cmd);
+bool		is_only_one_cmd(t_lst *node);
+int			handle_pwd_cmd(t_shell *p, t_lst *cmd);
+int			handle_exit_cmd(t_shell *p, t_lst *cmd);
+int			handle_env_cmd(t_shell *p, t_lst *cmd);
+int			handle_unset_cmd(t_shell *p, t_lst *cmd);
+int			handle_export_cmd(t_shell *p, t_lst *cmd);
+int			handle_echo_cmd(t_shell *p, t_lst *cmd);
 
+void		find_dollar_sign_and_replace(t_shell *p);
 
-void  find_dollar_sign_and_replace(t_shell *p);
-
-//signals
-void	setup_signal_handlers(void);
-void	handle_eof(void);
+//Signals
+void		setup_signal_handlers(void);
+void		handle_eof(void);
 
 #endif
