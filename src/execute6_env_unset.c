@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute6_env_unset.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/05 16:32:28 by mtocu             #+#    #+#             */
+/*   Updated: 2024/07/05 16:33:19 by mtocu            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	handle_env_cmd(t_shell *p, t_lst *cmd)
@@ -17,7 +29,8 @@ int	handle_unset_cmd(t_shell *p, t_lst *cmd)
 	current = p->envir;
 	while (current != NULL)
 	{
-		if (cmd->args[1] && ft_strncmp(current->key, cmd->args[1], ft_strlen(cmd->args[1]) + 1) == 0)
+		if (cmd->args[1] && ft_strncmp(current->key, cmd->args[1],
+				ft_strlen(cmd->args[1]) + 1) == 0)
 		{
 			if (current->prev)
 				current->prev->next = current->next;
@@ -34,4 +47,3 @@ int	handle_unset_cmd(t_shell *p, t_lst *cmd)
 	}
 	return (0);
 }
-

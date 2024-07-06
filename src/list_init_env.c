@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:23:34 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/03 15:18:55 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 15:39:17 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ static void	init_env(t_shell *p, char **envp)
 	int		j;
 
 	i = 0;
-	while(envp[i] != NULL)
+	while (envp[i] != NULL)
 	{
 		j = -1;
-		env = ft_split(envp[i], '='); //HOME=/home/user 
-		key = env[0]; //HOME
+		env = ft_split(envp[i], '=');
+		key = env[0];
 		value = getenv(key);
-		if(value)
+		if (value)
 			env_lstadd_back(&p->envir, env_lstnew(value, key));
 		else
 			env_lstadd_back(&p->envir, env_lstnew("", key));
@@ -72,16 +72,16 @@ static void	init_env(t_shell *p, char **envp)
 	return ;
 }
 
-void init(t_shell *p, char **envp, int argc, char **argv)
+void	init(t_shell *p, char **envp, int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
 	p->token_list = NULL;
-	p->error = false; // for export cmd
+	p->error = false;
 	p->envir = NULL;
 	p->run = true;
 	p->command_status = 0;
-	
-	if(envp)
+	p->null_fd = open("/dev/null", O_RDONLY);
+	if (envp)
 		init_env(p, envp);
 }

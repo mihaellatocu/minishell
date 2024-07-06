@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:24:07 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/05 16:06:54 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 15:58:42 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <stdbool.h>
 # include "../lib/libft.h"
 # include <signal.h>
-
 
 typedef enum e_token
 {
@@ -39,7 +39,6 @@ typedef enum e_token
 	DQUOTE = '\"',
 	O_BRAKET = '(',
 	C_BRAKET = ')',
-
 }	t_token;
 
 typedef enum e_cmd_structure
@@ -53,24 +52,28 @@ typedef enum e_cmd_structure
 
 typedef struct s_file
 {
-	int		fd;
-	char	*name; // name of the file
-	t_token	token;
-	struct s_file *next;
-	struct s_file *prev;
+	int				fd;
+	char			*name; // name of the file
+	t_token			token;
+	struct s_file	*next;
+	struct s_file	*prev;
 }			t_file;
 
 typedef struct s_lst //linked lists of tokens and args
 {
 	char				*content;
 	t_token				token; //enum tokens
-	t_cmd_structure		type;  //enum operators 
+	t_cmd_structure		type;//enum operators 
 	t_file				*infile;
 	t_file				*outfile;
 	struct s_lst		*next;
-	struct s_lst 		*prev;
+	struct s_lst		*prev;
 	char				**args;
+	char				*cmd_path;
 	bool				remove;
+	int					fd_in;
+	int					fd_out;
+	bool				run;
 }						t_lst;
 
 typedef struct s_env_list
@@ -85,25 +88,21 @@ typedef struct s_env_list
 
 typedef struct s_shell // stuctura
 {
-	//char				prompt[128];
-	//char				*input; // not used yet
-	//char				*cwd[1024]; // current working directory
-	pid_t				pid;
 	int					fd[2];
-	int					fd_in;
-	int					fd_out;
 	bool				run;
 	t_lst				*token_list; // linked lists of tokens
 	t_env_list			*envir; //lists of environments
-
 	bool				error;
 	int					command_status;
-	
+	int					nr_cmds;
+	int					**pipes;
+	int					prev_pipe;
+	int					null_fd;
+	pid_t				*pid;
 }				t_shell;
 
-
 void		init(t_shell *p, char **envp, int argc, char **argv);
-t_lst 		*split_into_tokens(char *line, t_shell *p);
+t_lst		*split_into_tokens(char *line, t_shell *p);
 void		manage_input(t_shell *p);
 
 // char		*find_path(char *cmd, char **envp);
@@ -120,10 +119,12 @@ void		cleaning_args(t_lst **nodes);
 //void	init_env(t_shell *p, char **envp); // init env list
 t_env_list	*env_lstnew(char *value, char *key);
 void		env_lstadd_back(t_env_list **lst, t_env_list *new);
-void		free_allocation_malloc_env(t_env_list **nodes); // free all env
+void		free_allocation_malloc_env(t_env_list **nodes);
 void		print_list(t_lst *nodes);
 void		print_env(t_env_list *nodes);
-void		set_command_structure(t_lst *node, bool found_cmd); //find CMD ARG and Operators for INFILE and OUTFILE
+
+/*find CMD ARG and Operators for INFILE and OUTFILE*/
+void		set_command_structure(t_lst *node, bool found_cmd);
 
 void		find_redirections(t_lst *node);
 int			assign_redirection(t_lst *node, t_lst *command);
@@ -141,25 +142,40 @@ void		print_list_cmd(t_lst *nodes);
 int			count_cmd(t_lst	*nodes);
 
 //execute functions
-void	execute(t_shell *p);
-int		handle_build_in(t_shell *p, t_lst *command);
-char	*find_home_env(t_shell *p);
-int		count_args(char	**args_from_a_node);
-int		handle_cd_cmd(t_shell *p, t_lst *cmd);
+void		execute(t_shell *p);
+int			handle_build_in(t_shell *p, t_lst *command);
+char		*find_home_env(t_shell *p);
+int			count_args(char	**args_from_a_node);
+int			handle_cd_cmd(t_shell *p, t_lst *cmd);
 
-bool	is_only_one_cmd(t_lst *node);
-int		handle_pwd_cmd(t_shell *p, t_lst *cmd);
-int		handle_exit_cmd(t_shell *p, t_lst *cmd);
-int		handle_env_cmd(t_shell *p, t_lst *cmd);
-int		handle_unset_cmd(t_shell *p, t_lst *cmd);
-int 	handle_export_cmd(t_shell *p, t_lst *cmd);
-int		handle_echo_cmd(t_shell *p, t_lst *cmd);
+bool		is_build_in_cmd(t_lst *node);
+int			handle_pwd_cmd(t_shell *p, t_lst *cmd);
+int			handle_exit_cmd(t_shell *p, t_lst *cmd);
+int			handle_env_cmd(t_shell *p, t_lst *cmd);
+int			handle_unset_cmd(t_shell *p, t_lst *cmd);
+int			handle_export_cmd(t_shell *p, t_lst *cmd);
+int			handle_echo_cmd(t_shell *p, t_lst *cmd);
+
+void		find_dollar_sign_and_replace(t_shell *p);
+
+//Signals
+void		setup_signal_handlers(void);
+void		handle_eof(void);
+void		handle_sigint(int sig);
+void		sigint_child_handler(int signum);
+
+/*Infile and Outfile*/
+int			outfile(t_lst *cmd);
+int			ft_strcmp(const char *s1, const char *s2);
+void		read_from_terminal(t_lst *cmd, int fd_in, char *delimiter);
+int			infile(t_lst *cmd);
 
 
-void  find_dollar_sign_and_replace(t_shell *p);
+/*Errors*/
+void		ft_malloc_error(void);
+void		ft_fork_error(void);
 
-//signals
-void	setup_signal_handlers(void);
-void	handle_eof(void);
+//free
+void		free_allocation_malloc_pipes(t_shell *p);
 
 #endif

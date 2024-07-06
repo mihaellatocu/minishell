@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 16:34:03 by mtocu             #+#    #+#             */
-/*   Updated: 2024/06/28 15:16:33 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/05 19:57:55 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,20 @@ bool	ft_strisnum(char *str)
 		i++;
 	if (str[i] == '\"' || str[i] == '\'')
 	{
-		in_quotes = true;//opening quotes
+		in_quotes = true;
 		i++;
 	}
 	while (str[i])
 	{
 		if (in_quotes && (str[i] == '\"' || str[i] == '\''))
-			in_quotes = false;//closing quotes
+			in_quotes = false;
 		else if (!in_quotes && (str[i] == '\"' || str[i] == '\''))
-			return (false); // if quotes are in the middle without opening
-		else if (!ft_isdigit((char)str[i])) // non numeric charcater found
+			return (false);
+		else if (!ft_isdigit((char)str[i]))
 			return (false);
 		i++;
 	}
-	return (!in_quotes); // returning 1 for true and 0 for false
+	return (!in_quotes);
 }
 
 int	handle_exit_cmd(t_shell *p, t_lst *cmd)
@@ -49,7 +49,7 @@ int	handle_exit_cmd(t_shell *p, t_lst *cmd)
 	else if (cmd->args[1] != NULL && !ft_strisnum(cmd->args[1]))
 	{
 		p->run = false;
-		return(write(2, "exit\nexit: numeric argument required\n", 37), 2);
+		return (write(2, "exit\nexit: numeric argument required\n", 37), 2);
 	}
 	else if (cmd->args[1])
 		exit_status = ft_atoi(cmd->args[1]);

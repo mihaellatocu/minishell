@@ -1,15 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute8_echo.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/05 16:35:01 by mtocu             #+#    #+#             */
+/*   Updated: 2024/07/06 16:03:17 by mtocu            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-
 
 int	handle_echo_cmd(t_shell *p, t_lst *cmd)
 {
-	int i;
-	(void)p;
+	int	i;
 
+	(void)p;
 	i = 1;
 	if (!cmd->args[i])
-		printf("\n");
+		return (printf("\n"), 0);
 	else
 	{
 		if (ft_strncmp(cmd->args[i], "-n", 3) == 0)

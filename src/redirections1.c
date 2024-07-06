@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:24:28 by mtocu             #+#    #+#             */
-/*   Updated: 2024/06/21 13:44:48 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/05 19:33:14 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 static void	handle_redirection(t_lst *cmd, t_lst *node, int type)
 {
 	if (type == INFILE)
-		file_lstadd_back(&cmd->infile,  file_lstnew(node->token, node->next->content, 0));
+		file_lstadd_back(&cmd->infile,  file_lstnew(node->token, \
+			node->next->content, 0));
 	else
-		file_lstadd_back(&cmd->outfile, file_lstnew(node->token, node->next->content, 1));
+		file_lstadd_back(&cmd->outfile, file_lstnew(node->token, \
+			node->next->content, 1));
 	// printf("node content for file %s\n", node->content);
 	node->next->remove = true;
 	node->remove = true;
@@ -25,45 +27,45 @@ static void	handle_redirection(t_lst *cmd, t_lst *node, int type)
 
 /*Once a redirection is found, this function search for the closer command
 	to assign the redirection*/
-t_lst	*find_closer_command(t_lst *command) 
+t_lst	*find_closer_command(t_lst *command)
 {
-	t_lst *current;
+	t_lst	*current;
 
 	current = command;
-	while(current->next != NULL)
+	while (current->next != NULL)
 	{
 		current = current->next;
 		if (current->type == CMD || current->token == PIPE)
-			break;
+			break ;
 	}
 	if (current->type == CMD)
 		return (current);
 	current = command;
-	while(current->prev != NULL)
+	while (current->prev != NULL)
 	{
 		current = current->prev;
 		if (current->type == CMD || current->token == PIPE)
-			break;
+			break ;
 	}
 	if (current->type == CMD)
 		return (current);
 	return (NULL);
 }
 
-int	assign_redirection(t_lst *node, t_lst *command) 
+int	assign_redirection(t_lst *node, t_lst *command)
 {
 	t_lst	*cmd;
 
 	cmd = command;
 	if (node->next != NULL && (node->next->token == WORD)) // to be added Dquote and Squote
 	{
-		if(is_infile_redirection(node)) // < file
+		if (is_infile_redirection(node)) // < file
 		{
-			// if( is_infile_redirection(node->next && node->next.is_not_valid_cmd))
+			// if ( is_infile_redirection(node->next && node->next.is_not_valid_cmd))
 			// 	return (2); - to be handled later
 			handle_redirection(cmd, node, INFILE);
 		}
-		else if(is_outfile_redirection(node)) // > file
+		else if (is_outfile_redirection(node)) // > file
 		{
 			// if(node->next && node->next.is_not_valid_cmd)
 			// 	return(2);
@@ -72,24 +74,22 @@ int	assign_redirection(t_lst *node, t_lst *command)
 		return (0);
 	}
 	return (2);
-}	
+}
 
+// (< and << ) or ( > and >>)
 void	find_redirections(t_lst *node)
 {
 	t_lst	*current;
 	t_lst	*command;
 
 	current = node;
-	while(current != NULL)
+	while (current != NULL)
 	{
-		if (is_infile_redirection(current) || is_outfile_redirection(current)) // (< and << ) or ( > and >>)
+		if (is_infile_redirection(current) || is_outfile_redirection(current))
 		{
 			command = find_closer_command(current);
 			assign_redirection(current, command);
-
 		}
 		current = current->next;
 	}
-
-	
 }

@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute2.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/05 16:29:59 by mtocu             #+#    #+#             */
+/*   Updated: 2024/07/06 15:21:50 by mtocu            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 /*Check if it's only one command and if that command is built in*/
-bool	is_only_one_cmd(t_lst *node)
+bool	is_build_in_cmd(t_lst *node)
 {
 	bool	is_build_in;
 
@@ -23,7 +35,7 @@ bool	is_only_one_cmd(t_lst *node)
 	return (is_build_in);
 }
 
-int		handle_build_in(t_shell *p, t_lst *command)
+int	handle_build_in(t_shell *p, t_lst *command)
 {
 	if (ft_strncmp(command->args[0], "cd", 3) == 0)
 		return (handle_cd_cmd(p, command));
@@ -37,7 +49,7 @@ int		handle_build_in(t_shell *p, t_lst *command)
 		return (handle_unset_cmd(p, command));
 	if (ft_strncmp(command->args[0], "export", 7) == 0)
 		return (handle_export_cmd(p, command));
-	if	(ft_strncmp(command->args[0], "echo", 5) == 0)
+	if (ft_strncmp(command->args[0], "echo", 5) == 0)
 		return (handle_echo_cmd(p, command));
-	return (0);
+	return (-1);
 }

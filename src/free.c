@@ -6,19 +6,19 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:19:41 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/04 15:02:04 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 13:47:01 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-void	free_arg_contents(char **args) // free arr or arguments
+// free arr or arguments
+void	free_arg_contents(char **args)
 {
 	int	i;
 
 	i = 0;
 	while (args[i] != NULL)
 	{
-		//printf("argument deleted:     %s\n", args[i]);
 		free(args[i]);
 		i++;
 	}
@@ -40,13 +40,14 @@ static void	free_files(t_file *file)
 	}
 }
 
-void	free_allocation_malloc(t_lst **nodes, char *line) // free all nodes of tokens
+// free all nodes of tokens
+void	free_allocation_malloc(t_lst **nodes, char *line)
 {
-	t_lst *current;
-	t_lst *tmp;
+	t_lst	*current;
+	t_lst	*tmp;
 
 	current = *nodes;
-	while(current != NULL)
+	while (current != NULL)
 	{
 		if (current->type == CMD)
 		{
@@ -61,11 +62,12 @@ void	free_allocation_malloc(t_lst **nodes, char *line) // free all nodes of toke
 		current = tmp;
 	}
 	*nodes = NULL;
-	if(line != NULL)
+	if (line != NULL)
 		free(line);
 }
 
-void	free_allocation_malloc_env(t_env_list **nodes) // free env list
+// free env list
+void	free_allocation_malloc_env(t_env_list **nodes)
 {
 	t_env_list	*current;
 	t_env_list	*tmp;
@@ -73,7 +75,7 @@ void	free_allocation_malloc_env(t_env_list **nodes) // free env list
 	current = *nodes;
 	if (current != NULL)
 	{
-		while(current != NULL)
+		while (current != NULL)
 		{
 			if (current->key != NULL)
 				free(current->key);
@@ -87,10 +89,11 @@ void	free_allocation_malloc_env(t_env_list **nodes) // free env list
 	*nodes = NULL;
 }
 
-void	cleaning_args(t_lst **nodes)// free arg nodes or any unwanted nodes
+// free arg nodes or any unwanted nodes
+void	cleaning_args(t_lst **nodes)
 {
-	t_lst *current;
-	t_lst *tmp;
+	t_lst	*current;
+	t_lst	*tmp;
 
 	current = *nodes;
 	while (current != NULL)
@@ -103,11 +106,28 @@ void	cleaning_args(t_lst **nodes)// free arg nodes or any unwanted nodes
 			else
 				*nodes = current->next;
 			if (current->next != NULL)
-			 	current->next->prev = current->prev;
+				current->next->prev = current->prev;
 			if (current->content != NULL)
 				free(current->content);
 			free(current);
-		}	
+		}
 		current = tmp;
 	}
+}
+
+/*Free alloc malloc pipes*/
+void	free_allocation_malloc_pipes(t_shell *p)
+{
+	int	i;
+
+	i = 0;
+	while (i < p->nr_cmds)
+	{
+		free(p->pipes[i]);
+		i++;
+	}
+	free(p->pipes);
+	p->pipes = NULL;
+	free(p->pid);
+	p->pid = NULL;
 }
