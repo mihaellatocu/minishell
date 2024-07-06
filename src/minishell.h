@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:24:07 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/05 19:52:56 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 15:58:42 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <stdbool.h>
 # include "../lib/libft.h"
 # include <signal.h>
@@ -68,7 +69,11 @@ typedef struct s_lst //linked lists of tokens and args
 	struct s_lst		*next;
 	struct s_lst		*prev;
 	char				**args;
+	char				*cmd_path;
 	bool				remove;
+	int					fd_in;
+	int					fd_out;
+	bool				run;
 }						t_lst;
 
 typedef struct s_env_list
@@ -83,18 +88,17 @@ typedef struct s_env_list
 
 typedef struct s_shell // stuctura
 {
-	//char				prompt[128];
-	//char				*input; // not used yet
-	//char				*cwd[1024]; // current working directory
-	pid_t				pid;
 	int					fd[2];
-	int					fd_in;
-	int					fd_out;
 	bool				run;
 	t_lst				*token_list; // linked lists of tokens
 	t_env_list			*envir; //lists of environments
 	bool				error;
 	int					command_status;
+	int					nr_cmds;
+	int					**pipes;
+	int					prev_pipe;
+	int					null_fd;
+	pid_t				*pid;
 }				t_shell;
 
 void		init(t_shell *p, char **envp, int argc, char **argv);
@@ -144,7 +148,7 @@ char		*find_home_env(t_shell *p);
 int			count_args(char	**args_from_a_node);
 int			handle_cd_cmd(t_shell *p, t_lst *cmd);
 
-bool		is_only_one_cmd(t_lst *node);
+bool		is_build_in_cmd(t_lst *node);
 int			handle_pwd_cmd(t_shell *p, t_lst *cmd);
 int			handle_exit_cmd(t_shell *p, t_lst *cmd);
 int			handle_env_cmd(t_shell *p, t_lst *cmd);
@@ -157,5 +161,21 @@ void		find_dollar_sign_and_replace(t_shell *p);
 //Signals
 void		setup_signal_handlers(void);
 void		handle_eof(void);
+void		handle_sigint(int sig);
+void		sigint_child_handler(int signum);
+
+/*Infile and Outfile*/
+int			outfile(t_lst *cmd);
+int			ft_strcmp(const char *s1, const char *s2);
+void		read_from_terminal(t_lst *cmd, int fd_in, char *delimiter);
+int			infile(t_lst *cmd);
+
+
+/*Errors*/
+void		ft_malloc_error(void);
+void		ft_fork_error(void);
+
+//free
+void		free_allocation_malloc_pipes(t_shell *p);
 
 #endif

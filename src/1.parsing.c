@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:20:04 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/05 20:07:05 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 16:00:54 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static bool	operator(int c)
 	return (false);
 }
 
-char	*find_word(char *line, size_t *i, t_token token)
+char	*find_word(char *s, size_t *i, t_token token)
 {
 	char	*word;
 	size_t	start;
@@ -50,19 +50,19 @@ char	*find_word(char *line, size_t *i, t_token token)
 	start = *i;
 	index = 0;
 	if ((char)token == WORD)
-		while (!ft_isspace((int)line[*i]) && !operator((int)line[*i]) && line[*i] != '\0')
+		while (!ft_isspace((int)s[*i]) && !operator((int)s[*i]) && s[*i])
 			(*i)++;
 	else
 	{
 		start++;
-		while (line[++(*i)] != (char)token)
+		while (s[++(*i)] != (char)token)
 			;
 	}
 	word = (char *)malloc((*i - start + 2) * sizeof(char));
 	// if (!word) // to be added
 	// 	error(1);
 	while (start < *i)
-		word[index++] = line[start++];
+		word[index++] = s[start++];
 	word[index] = '\0';
 	if (token == WORD)
 		(*i)--;
@@ -86,7 +86,7 @@ t_lst	*split_into_tokens(char *line, t_shell *p)
 		else if (line[i] == '\"')
 			lstadd_back(&p->token_list, lstnew(find_word(line, &i, DQUOTE), DQUOTE));
 		else if (ft_isalnum(line[i]) || line[i] == '-' || line[i] == '.' || line[i] == '=' || \
-			line[i] == '/' || line[i] == '$' || line[i] == '*' || line[i] == '_')
+			line[i] == '/' || line[i] == '$' || line[i] == '*' || line[i] == '_' || line[i] == '+')
 			lstadd_back(&p->token_list, lstnew(find_word(line, &i, WORD), WORD));
 	}
 	return (p->token_list);
@@ -110,17 +110,17 @@ int	get_arg_count(t_lst *node)
  they are not a word */
 void	manage_input(t_shell *p)
 {
-	t_lst		*current_node;
+	t_lst		*current;
 	t_lst		*start_node;
 	int			arg_count;
 	int			i;
 
-	current_node = p->token_list;
-	while (current_node != NULL)
+	current = p->token_list;
+	while (current != NULL)
 	{
-		if (current_node->token == WORD || current_node->token == SQUOTE || current_node->token == DQUOTE)
+		if (current->token == WORD || current->token == SQUOTE || current->token == DQUOTE)
 		{
-			start_node = current_node;
+			start_node = current;
 			arg_count = get_arg_count(start_node);
 			start_node->args = malloc(sizeof(char *) * (arg_count + 1));
 			if (!start_node->args)
@@ -129,20 +129,20 @@ void	manage_input(t_shell *p)
 				exit(EXIT_FAILURE);
 			}
 			i = 0;
-			while (current_node != NULL && current_node->token != PIPE)
+			while (current != NULL && current->token != PIPE)
 			{
-				if (current_node->type == CMD || current_node->type == ARG)
+				if (current->type == CMD || current->type == ARG)
 				{
-					start_node->args[i] = ft_strdup(current_node->content);
+					start_node->args[i] = ft_strdup(current->content);
 					if (i > 0)
-						current_node->remove = true;
+						current->remove = true;
 					i++;
 				}
-				current_node = current_node->next;
+				current = current->next;
 			}
 			start_node->args[i] = NULL;
 		}
 		else
-			current_node = current_node->next;
+			current = current->next;
 	}
 }

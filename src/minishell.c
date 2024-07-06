@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:23:58 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/05 19:53:18 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 15:07:14 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv, char **envp)
 		
 		cleaning_args(&p.token_list);
 
-		print_list_cmd(p.token_list);
+		// print_list_cmd(p.token_list);
 		count_cmd(p.token_list); // removing pipes
 		cleaning_args(&p.token_list);
 		execute(&p);

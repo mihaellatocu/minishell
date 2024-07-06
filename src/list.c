@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 17:26:30 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/05 19:59:37 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 15:39:04 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ t_lst	*lstnew(char *content, t_token token)
 	result->infile = NULL;
 	result->outfile = NULL;
 	result->remove = false;
+	result->fd_in = 0;
+	result->fd_out = 1;
+	result->run = true;
+	result->cmd_path = NULL;
 	return (result);
 }
 

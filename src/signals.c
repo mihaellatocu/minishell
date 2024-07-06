@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 16:41:44 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/05 16:42:29 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 15:58:27 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,16 @@ void	handle_sigint(int sig)
 	printf("\n");
 	rl_on_new_line();
 	rl_redisplay();
+}
+
+void	sigint_child_handler(int signum)
+{
+	if (signum)
+	{
+		rl_replace_line("", 0);
+		printf("\n");
+		rl_redisplay();
+	}
 }
 
 // Do nothing

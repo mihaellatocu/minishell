@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:23:34 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/05 16:36:36 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/06 15:39:17 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void	init(t_shell *p, char **envp, int argc, char **argv)
 	p->envir = NULL;
 	p->run = true;
 	p->command_status = 0;
+	p->null_fd = open("/dev/null", O_RDONLY);
 	if (envp)
 		init_env(p, envp);
 }
