@@ -105,9 +105,9 @@ void	set_redirection(t_lst *cmd, t_shell *p, int i)
 /*This function assign redirection, close pipes and call execve()*/
 void	execute_child(t_shell *p, t_lst *cmd, int i)
 {
-	char	**env_list;
+	//char	**env_list;
 
-	env_list = NULL;
+	//env_list = NULL;
 	signal(SIGINT, SIG_DFL);//new
 	signal(SIGQUIT, SIG_DFL);//new
 	set_redirection(cmd, p, i);

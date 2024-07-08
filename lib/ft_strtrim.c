@@ -30,12 +30,10 @@ char	*ft_strtrim(char *s1, char const *set)
 {
 	unsigned char	*str;
 	size_t			i;
-	size_t			ctr;
 	size_t			start;
 	size_t			end;
 
 	i = 0;
-	ctr = 0;
 	start = 0;
 	end = ft_strlen(s1);
 	while (s1[start] && ft_check_in_set(s1[start], set))
