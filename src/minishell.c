@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:23:58 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/06 15:07:14 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/09 15:06:12 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,7 @@ int main(int argc, char **argv, char **envp)
 	{
 		line = readline("minishell>> ");
 		if (line == NULL)
-		{
-			//ft_putstr_fd("ex\n", STDOUT_FILENO);
-			;//break ;
 			handle_eof();
-		}
 		add_history(line);
 		p.token_list = split_into_tokens(line, &p);
 

@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:18:55 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/06 16:09:39 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/09 14:15:08 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,12 @@ void	execute_child(t_shell *p, t_lst *cmd, int i)
 		exit(EXIT_SUCCESS);
 	}
 	find_path(cmd, p->envir);
-	execve(cmd->cmd_path, cmd->args, NULL);//to add env list
-	printf("error\n");
-	exit(EXIT_FAILURE);
+	if (cmd->cmd_path == NULL || execve(cmd->cmd_path, cmd->args, NULL) == -1)//to add env list
+	{
+		ft_putstr_fd(cmd->content, 2);
+		ft_putstr_fd(": command not found\n", 2);
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	execute_parent(t_shell *p, t_lst *cmd, int i)
