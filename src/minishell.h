@@ -158,11 +158,13 @@ int			handle_echo_cmd(t_shell *p, t_lst *cmd);
 
 void		find_dollar_sign_and_replace(t_shell *p);
 
-//Signals
+/* Signals */
 void		setup_signal_handlers(void);
+void		setup_child_signal_handlers(void);
 void		handle_eof(void);
 void		handle_sigint(int sig);
 void		sigint_child_handler(int signum);
+void		sigquit_child_handler(int signum);
 
 /*Infile and Outfile*/
 int			outfile(t_lst *cmd);

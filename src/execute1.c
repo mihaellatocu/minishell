@@ -83,118 +83,106 @@ void	find_path(t_lst *cmd, t_env_list *env)
 	free(split_paths);
 }
 
-/*This function set the redirection for each command*/
-void	set_redirection(t_lst *cmd, t_shell *p, int i)
+/* This function set the redirection for each command */
+void set_redirection(t_lst *cmd, t_shell *p, int i)
 {
-	if (cmd->fd_in != STDIN_FILENO)
-		dup2(cmd->fd_in, STDIN_FILENO);
-	else if (i > 0 && cmd->prev->run == false)
-		dup2(p->null_fd, STDIN_FILENO);
-	else if (i > 0 && p->prev_pipe >= 0)
-		dup2(p->prev_pipe, STDIN_FILENO);
-	else
-		dup2(0, STDIN_FILENO);
-	if (cmd->fd_out != STDOUT_FILENO)
-		dup2(cmd->fd_out, STDOUT_FILENO);
-	else if (cmd->next != NULL && p->pipes[i][1] >= 0)// && cmd.is_last == false)
-		dup2(p->pipes[i][1], STDOUT_FILENO);
-	else
-		dup2(1, STDOUT_FILENO);
+    if (cmd->fd_in != STDIN_FILENO)
+        dup2(cmd->fd_in, STDIN_FILENO);
+    else if (i > 0 && cmd->prev->run == false)
+        dup2(p->null_fd, STDIN_FILENO);
+    else if (i > 0 && p->prev_pipe >= 0)
+        dup2(p->prev_pipe, STDIN_FILENO);
+    else
+        dup2(0, STDIN_FILENO);
+    if (cmd->fd_out != STDOUT_FILENO)
+        dup2(cmd->fd_out, STDOUT_FILENO);
+    else if (cmd->next != NULL && p->pipes[i][1] >= 0)
+        dup2(p->pipes[i][1], STDOUT_FILENO);
+    else
+        dup2(1, STDOUT_FILENO);
 }
 
-/*This function assign redirection, close pipes and call execve()*/
-void	execute_child(t_shell *p, t_lst *cmd, int i)
+/* This function assigns redirection, closes pipes, and calls execve() */
+void execute_child(t_shell *p, t_lst *cmd, int i)
 {
-	//char	**env_list;
-
-	//env_list = NULL;
-	signal(SIGINT, SIG_DFL);//new
-	signal(SIGQUIT, SIG_DFL);//new
-	set_redirection(cmd, p, i);
-	if(handle_build_in(p, cmd) != -1)
-	{
-		//free_all_memory(p); to be added
-		exit(EXIT_SUCCESS);
-	}
-	find_path(cmd, p->envir);
-	execve(cmd->cmd_path, cmd->args, NULL);//to add env list
-	printf("error\n");
-	exit(EXIT_FAILURE);
+    set_redirection(cmd, p, i);
+    if (handle_build_in(p, cmd) != -1)
+    {
+        exit(EXIT_SUCCESS);
+    }
+    find_path(cmd, p->envir);
+    execve(cmd->cmd_path, cmd->args, NULL);
+    printf("error\n");
+    exit(EXIT_FAILURE);
 }
 
-void	execute_parent(t_shell *p, t_lst *cmd, int i)
+void execute_parent(t_shell *p, t_lst *cmd, int i)
 {
-	int		stat_loc;
-	int		exit_status;
-	int 	j;
-	
-	signal(SIGINT, sigint_child_handler);//new
-	signal(SIGQUIT, SIG_IGN);//new
-	close(p->pipes[i][1]);
-	p->prev_pipe = p->pipes[i][0];
-	if (i == p->nr_cmds  - 1)
-		close(p->prev_pipe);
-	if (i == p->nr_cmds - 1)
-	{
-		waitpid(p->pid[i], &stat_loc, 0);
-		if (WIFEXITED(stat_loc))
-		{
-			exit_status = WEXITSTATUS(stat_loc);
-			p->command_status = exit_status;
-		}
-		j = -1;
-		while (++j < i)
-			close (p->pipes[j][0]);
-	}
-	(void)cmd;
+    int stat_loc;
+    int exit_status;
+    int j;
+
+    close(p->pipes[i][1]);
+    p->prev_pipe = p->pipes[i][0];
+    if (i == p->nr_cmds - 1)
+        close(p->prev_pipe);
+    if (i == p->nr_cmds - 1)
+    {
+        waitpid(p->pid[i], &stat_loc, 0);
+        if (WIFEXITED(stat_loc))
+        {
+            exit_status = WEXITSTATUS(stat_loc);
+            p->command_status = exit_status;
+        }
+        j = -1;
+        while (++j < i)
+            close(p->pipes[j][0]);
+    }
+    (void)cmd;
 }
 
-/*Execution of multiple commands using forks*/
-bool	execute_commands(t_shell *p, t_lst *cmd, int i)
+/* Execution of multiple commands using forks */
+bool execute_commands(t_shell *p, t_lst *cmd, int i)
 {
-	t_lst	*current;
+    t_lst *current;
 
-	current = cmd;
-	allocate_pipe_memory(p);
-	while (i < p->nr_cmds)
-	{
-		infile(current); // to be corrected
-		if (current->run == true)
-			outfile(current);
-		if (current->run == true)
-		{
-			p->pid[i] = fork();
-			if (p->pid[i] == -1)
-				ft_fork_error();
-			if (p->pid[i] == 0)
-				execute_child(p, current, i);
-			else
-				execute_parent(p, current, i);
-		}
-		current = current->next;
-		i++;
-	}
-	i = 0;
-	while (i++ < p->nr_cmds -1)
-		wait(NULL);
-	free_allocation_malloc_pipes(p);
-	return (true);
+    current = cmd;
+    allocate_pipe_memory(p);
+    while (i < p->nr_cmds)
+    {
+        infile(current);
+        if (current->run == true)
+            outfile(current);
+        if (current->run == true)
+        {
+            p->pid[i] = fork();
+            if (p->pid[i] == -1)
+                ft_fork_error();
+            if (p->pid[i] == 0)
+                execute_child(p, current, i);
+            else
+                execute_parent(p, current, i);
+        }
+        current = current->next;
+        i++;
+    }
+    i = 0;
+    while (i++ < p->nr_cmds - 1)
+        wait(NULL);
+    free_allocation_malloc_pipes(p);
+    return (true);
 }
 
-void	execute(t_shell *p)
+void execute(t_shell *p)
 {
-	t_lst	*current;
+    t_lst *current;
 
-	current = p->token_list;
-	// while (current != NULL)
-	// {
-		p->nr_cmds = count_cmd(current);
-		if (p->nr_cmds == 1 && is_build_in_cmd(current) == true) //change is_built_in
-			p->command_status = handle_build_in(p, current);	
-		else
-			execute_commands(p, current, 0);
-		
-	// 	current = current->next;
-	// }
-	signal(SIGINT, handle_sigint);
+    current = p->token_list;
+    p->nr_cmds = count_cmd(current);
+    if (p->nr_cmds == 1 && is_build_in_cmd(current) == true)
+        p->command_status = handle_build_in(p, current);
+    else
+        execute_commands(p, current, 0);
+
+    signal(SIGINT, handle_sigint);
 }
