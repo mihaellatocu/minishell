@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:18:55 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/06 16:09:39 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/09 14:15:08 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,15 +105,24 @@ void set_redirection(t_lst *cmd, t_shell *p, int i)
 /* This function assigns redirection, closes pipes, and calls execve() */
 void execute_child(t_shell *p, t_lst *cmd, int i)
 {
-    set_redirection(cmd, p, i);
-    if (handle_build_in(p, cmd) != -1)
-    {
-        exit(EXIT_SUCCESS);
-    }
-    find_path(cmd, p->envir);
-    execve(cmd->cmd_path, cmd->args, NULL);
-    printf("error\n");
-    exit(EXIT_FAILURE);
+	//char	**env_list;
+
+	//env_list = NULL;
+	signal(SIGINT, SIG_DFL);//new
+	signal(SIGQUIT, SIG_DFL);//new
+	set_redirection(cmd, p, i);
+	if(handle_build_in(p, cmd) != -1)
+	{
+		//free_all_memory(p); to be added
+		exit(EXIT_SUCCESS);
+	}
+	find_path(cmd, p->envir);
+	if (cmd->cmd_path == NULL || execve(cmd->cmd_path, cmd->args, NULL) == -1)//to add env list
+	{
+		ft_putstr_fd(cmd->content, 2);
+		ft_putstr_fd(": command not found\n", 2);
+		exit(EXIT_FAILURE);
+	}
 }
 
 void execute_parent(t_shell *p, t_lst *cmd, int i)
