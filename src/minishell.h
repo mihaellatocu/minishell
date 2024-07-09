@@ -25,6 +25,7 @@
 # include <stdbool.h>
 # include "../lib/libft.h"
 # include <signal.h>
+# include <termios.h>
 
 typedef enum e_token
 {

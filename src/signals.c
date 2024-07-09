@@ -17,29 +17,9 @@ void handle_sigint(int sig)
 {
     (void)sig;
     rl_replace_line("", 0);
-    write(STDOUT_FILENO, "\n", 1);
+    printf("\n");
     rl_on_new_line();
     rl_redisplay();
-}
-
-/* Handle SIGQUIT (ctrl + \) */
-void handle_sigquit(int sig)
-{
-    (void)sig;
-    if (rl_line_buffer[0] == '\0')
-    {
-        // If the prompt is empty, do nothing
-        rl_on_new_line();
-        rl_redisplay();
-    }
-    else
-    {
-        // If there is input, quit the shell
-        rl_replace_line("", 0);
-        rl_redisplay();
-        write(STDOUT_FILENO, "Quit\n", 5);
-        exit(0);
-    }
 }
 
 /* SIGINT handler for child processes */
@@ -47,7 +27,7 @@ void sigint_child_handler(int signum)
 {
     if (signum == SIGINT)
     {
-        write(STDOUT_FILENO, "\n", 1);
+        printf("\n");
         exit(130);  // 128 + SIGINT
     }
 }
@@ -57,7 +37,7 @@ void sigquit_child_handler(int signum)
 {
     if (signum == SIGQUIT)
     {
-        write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+        printf("Quit (core dumped)\n");
         exit(131);  // 128 + SIGQUIT
     }
 }
@@ -65,7 +45,7 @@ void sigquit_child_handler(int signum)
 /* Handle ctrl-D (EOF) to exit the shell */
 void handle_eof(void)
 {
-    write(STDOUT_FILENO, "exit\n", 5);
+    printf("exit\n");
     exit(0);
 }
 
@@ -78,7 +58,7 @@ void setup_signal_handlers(void)
     sigemptyset(&sa_int.sa_mask);
     sa_int.sa_flags = SA_RESTART;
 
-    sa_quit.sa_handler = handle_sigquit;
+    sa_quit.sa_handler = SIG_IGN;  // Ignore SIGQUIT in the main shell
     sigemptyset(&sa_quit.sa_mask);
     sa_quit.sa_flags = SA_RESTART;
 
