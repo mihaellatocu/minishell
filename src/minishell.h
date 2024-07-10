@@ -26,6 +26,7 @@
 # include "../lib/libft.h"
 # include <signal.h>
 # include <termios.h>
+# include <dirent.h>
 
 typedef enum e_token
 {
@@ -135,6 +136,7 @@ t_lst		*find_closer_command(t_lst *command);
 t_file		*file_lstnew(t_token token, char *name, int fd);
 void		file_lstadd_back(t_file **list_of_files, t_file *new_file);
 int			file_lstsize(t_file *list);
+int			env_lstsize(t_env_list *lst);
 
 bool		is_infile_redirection(t_lst *current);
 bool		is_outfile_redirection(t_lst *current);
@@ -177,6 +179,7 @@ int			infile(t_lst *cmd);
 /*Errors*/
 void		ft_malloc_error(void);
 void		ft_fork_error(void);
+int			error_execve(char *str);
 
 //free
 void		free_allocation_malloc_pipes(t_shell *p);

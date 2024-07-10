@@ -18,6 +18,20 @@ static void	pipe_error(void)
 	exit(EXIT_FAILURE);
 }
 
+static void	free_env_vars_from_child(char **list)
+{
+	int	i;
+
+	i = 0;
+	while (list[i])
+	{
+		free(list[i]);
+		i++;
+	}
+	free(list);
+	return ;
+}
+
 void	allocate_pipe_memory(t_shell *p)
 {
 	int	i;
@@ -102,12 +116,52 @@ void set_redirection(t_lst *cmd, t_shell *p, int i)
         dup2(1, STDOUT_FILENO);
 }
 
+void	close_all_pipes(t_shell *p)
+{
+	int	i;
+	i = 0;
+	while (i < p->nr_cmds)
+	{
+			close(p->pipes[i][0]);
+			close(p->pipes[i][1]);
+			i++;
+	}
+}
+
+char    **concatenate_key_value(t_env_list *list, int size)
+{
+    char        **result;
+    t_env_list  *temp;
+    int         i;
+    result = (char **)malloc((size + 1) * sizeof(char *));
+    if (!result)
+        return (NULL);
+    temp = list;
+    i = 0;
+    while (temp)
+    {
+        size = ft_strlen(temp->key) + ft_strlen(temp->value) + 1;
+        result[i] = (char *)malloc((size + 1) * sizeof(char));
+        if (!result[i])
+        {
+            free(result);
+            return (NULL);
+        }
+        ft_strlcpy(result[i], temp->key, size);
+        ft_strlcat(result[i], "=", size);
+        ft_strlcat(result[i++], temp->value, size + 1);
+        temp = temp->next;
+    }
+    result[i] = NULL;
+    return (result);
+}
+
 /* This function assigns redirection, closes pipes, and calls execve() */
 void execute_child(t_shell *p, t_lst *cmd, int i)
 {
-	//char	**env_list;
+	char	**env_list;
 
-	//env_list = NULL;
+	env_list = NULL;
 	signal(SIGINT, SIG_DFL);//new
 	signal(SIGQUIT, SIG_DFL);//new
 	set_redirection(cmd, p, i);
@@ -117,12 +171,11 @@ void execute_child(t_shell *p, t_lst *cmd, int i)
 		exit(EXIT_SUCCESS);
 	}
 	find_path(cmd, p->envir);
-	if (cmd->cmd_path == NULL || execve(cmd->cmd_path, cmd->args, NULL) == -1)//to add env list
-	{
-		ft_putstr_fd(cmd->content, 2);
-		ft_putstr_fd(": command not found\n", 2);
-		exit(EXIT_FAILURE);
-	}
+	env_list = concatenate_key_value(p->envir, env_lstsize(p->envir));
+	close_all_pipes(p);
+	execve(cmd->cmd_path, cmd->args, env_list);
+	free_env_vars_from_child(env_list);
+	exit(error_execve(cmd->args[0]));
 }
 
 void execute_parent(t_shell *p, t_lst *cmd, int i)

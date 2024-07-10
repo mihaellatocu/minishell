@@ -85,3 +85,19 @@ void	init(t_shell *p, char **envp, int argc, char **argv)
 	if (envp)
 		init_env(p, envp);
 }
+
+/*Functions that manage the list of variables*/
+int	env_lstsize(t_env_list *lst)
+{
+	int			i;
+	t_env_list	*current;
+
+	i = 0;
+	current = lst;
+	while (current != NULL)
+	{
+		i++;
+		current = current->next;
+	}
+	return (i);
+}
