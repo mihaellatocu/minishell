@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:20:04 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/11 12:32:37 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/11 14:46:29 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ t_lst	*split_into_tokens(char *line, t_shell *p)
 			lstadd_back(&p->token_list, \
 				lstnew(find_word(line, &i, WORD), WORD));
 	}
+	p->error = false;
 	return (p->token_list);
 }
 

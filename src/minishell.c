@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:23:58 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/11 13:42:41 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/11 14:46:16 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ int	main(int argc, char **argv, char **envp)
 	setup_signal_handlers();
 	while (p.run == true)
 	{
-		p.error = false;
 		p.line = readline("minishell>> ");
 		if (p.line == NULL)
 			handle_eof();
@@ -98,8 +97,7 @@ int	main(int argc, char **argv, char **envp)
 		cleaning_args(&p.token_list);
 		count_cmd(p.token_list);
 		cleaning_args(&p.token_list);
-		if (p.error == false)
-			execute(&p);
+		execute(&p);
 		free_allocation_malloc(&p.token_list, p.line);
 	}
 	free_allocation_malloc_env(&p.envir);

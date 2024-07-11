@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:24:07 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/11 13:50:50 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/11 14:44:54 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,11 +175,14 @@ int						infile(t_lst *cmd);
 /*Errors*/
 void					ft_malloc_error(void);
 void					ft_fork_error(void);
-int						error_execve(char *str, t_shell *p);
+int						error_execve(char *str);
 void					redirection_error(t_lst *current);
 
 //free
 void					free_allocation_malloc_pipes(t_shell *p);
 void					free_all_memory(t_shell *p);
 
+
+// t_token	find_token(char *str, size_t *i);
+// bool	operator(int c);
 #endif

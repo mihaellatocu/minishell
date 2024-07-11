@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 12:33:21 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/11 14:02:21 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/11 14:38:54 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void	ft_fork_error(void)
 	exit(EXIT_FAILURE);
 }
 
-int	error_execve(char *str, t_shell *p)
-{(void)p;
+int	error_execve(char *str)
+{
 	int	err_no;
 	DIR	*dir;
 

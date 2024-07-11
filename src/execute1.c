@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:18:55 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/11 14:04:37 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/11 14:41:01 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	execute_child(t_shell *p, t_lst *cmd, int i)
 	close_all_pipes(p);
 	execve(cmd->cmd_path, cmd->args, env_list);
 	free_env_vars_from_child(env_list);
-	exit(error_execve(cmd->args[0], p));
+	exit(error_execve(cmd->args[0]));
 }
 
 void	execute_parent(t_shell *p, t_lst *cmd, int i)
@@ -251,11 +251,14 @@ void	execute(t_shell *p)
 {
 	t_lst	*current;
 
-	current = p->token_list;
-	p->nr_cmds = count_cmd(current);
-	if (p->nr_cmds == 1 && is_build_in_cmd(current) == true)
-		p->command_status = handle_build_in(p, current);
-	else
-		execute_commands(p, current, -1);
-	signal(SIGINT, handle_sigint);
+	if (p->error == false)
+	{
+		current = p->token_list;
+		p->nr_cmds = count_cmd(current);
+		if (p->nr_cmds == 1 && is_build_in_cmd(current) == true)
+			p->command_status = handle_build_in(p, current);
+		else
+			execute_commands(p, current, -1);
+		signal(SIGINT, handle_sigint);
+	}
 }
