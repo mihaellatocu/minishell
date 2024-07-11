@@ -74,8 +74,6 @@ int	find_key_value(char *arg, char **key, char **value, int pos_equal)
 		}
 		else
 			*value = ft_strdup("");
-		printf("key: %s\n", *key);
-		printf("value: %s\n", *value);
 		return (0);
 	}
 }

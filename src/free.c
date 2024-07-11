@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:19:41 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/06 13:47:01 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/11 13:48:48 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	free_arg_contents(char **args)
 		i++;
 	}
 	free(args);
+	unlink(".here_doc");
 }
 
 static void	free_files(t_file *file)
@@ -130,4 +131,15 @@ void	free_allocation_malloc_pipes(t_shell *p)
 	p->pipes = NULL;
 	free(p->pid);
 	p->pid = NULL;
+}
+
+/*This function calls all functions to free memory allocated*/
+void	free_all_memory(t_shell *p)
+{
+	free_allocation_malloc(&p->token_list, p->line);
+	p->token_list = NULL;
+	p->line = NULL;
+	free_allocation_malloc_pipes(p);
+	free_allocation_malloc_env(&p->envir);
+	p->envir = NULL;
 }
