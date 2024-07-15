@@ -33,42 +33,6 @@ static t_token	find_token(char *str, size_t *i)
 		return (GREAT);
 }
 
-static bool	operator(int c)
-{
-	if (c == PIPE || c == LESS || c == DLESS || c == DGREAT || c == '&' || \
-		c == GREAT)
-		return (true);
-	return (false);
-}
-
-char	*find_word(char *s, size_t *i, t_token token)
-{
-	char	*word;
-	size_t	start;
-	size_t	index;
-
-	start = *i;
-	index = 0;
-	if ((char)token == WORD)
-		while (!ft_isspace((int)s[*i]) && !operator((int)s[*i]) && s[*i])
-			(*i)++;
-	else
-	{
-		start++;
-		while (s[++(*i)] != (char)token)
-			;
-	}
-	word = (char *)malloc((*i - start + 2) * sizeof(char));
-	if (!word)
-		ft_malloc_error();
-	while (start < *i)
-		word[index++] = s[start++];
-	word[index] = '\0';
-	if (token == WORD)
-		(*i)--;
-	return (word);
-}
-
 //split the line in words and tokens, wc -l | ls -> 4 tokens
 t_lst	*split_into_tokens(char *line, t_shell *p)
 {

@@ -108,6 +108,8 @@ typedef struct s_shell
 void					init(t_shell *p, char **envp, int argc, char **argv);
 t_lst					*split_into_tokens(char *line, t_shell *p);
 void					manage_input(t_shell *p, int i, int arg_count);
+char					*find_word(char *s, size_t *i, t_token token);
+bool					is_operator(t_lst *current);
 
 /*create and manage the lists*/
 void					lstadd_back(t_lst **lst, t_lst *new);
@@ -139,7 +141,7 @@ int						file_lstsize(t_file *list);
 int						env_lstsize(t_env_list *lst);
 bool					is_infile_redirection(t_lst *current);
 bool					is_outfile_redirection(t_lst *current);
-void					print_list_cmd(t_lst *nodes);
+//void					print_list_cmd(t_lst *nodes);
 int						count_cmd(t_lst	*nodes);
 
 //execute functions
@@ -156,6 +158,9 @@ int						handle_unset_cmd(t_shell *p, t_lst *cmd);
 int						handle_export_cmd(t_shell *p, t_lst *cmd);
 int						handle_echo_cmd(t_shell *p, t_lst *cmd);
 void					find_dollar_sign_and_replace(t_shell *p);
+int						ft_find_dollar(char *str, char **word, int i);
+void					find_duplicate_env(t_env_list *head_env_list);
+void					delete_env_dups(t_env_list **nodes);
 
 /* Signals */
 void					setup_signal_handlers(void);
@@ -171,6 +176,7 @@ int						ft_strcmp(const char *s1, const char *s2);
 void					read_from_terminal(t_lst *cmd, int fd_in, \
 							char *delimiter);
 int						infile(t_lst *cmd);
+int						open_fd_solo_cmd(t_shell *p, t_lst *cmd);
 
 /*Errors*/
 void					ft_malloc_error(void);
@@ -181,8 +187,6 @@ void					redirection_error(t_lst *current);
 //free
 void					free_allocation_malloc_pipes(t_shell *p);
 void					free_all_memory(t_shell *p);
+void					free_temporary_vars(char **key, char **variable);
 
-int	open_fd_solo_cmd(t_shell *p, t_lst *cmd);
-// t_token	find_token(char *str, size_t *i);
-// bool	operator(int c);
 #endif

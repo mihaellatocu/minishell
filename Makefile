@@ -5,21 +5,20 @@ RM			= rm -rf
 
 SRCS	= src/minishell.c \
 			src/list.c \
-			src/free.c \
+			src/free1.c src/free2.c \
 			src/list_init_env.c \
 			src/redirections.c \
 			src/redirections1.c \
-			src/redirections2_dollar.c \
+			src/redirections2_dollar.c src/redirections_helper.c \
 			src/list_init_file.c \
-			src/1.parsing.c \
+			src/1.parsing.c src/1.parsing2.c \
 			src/execute1.c src/execute2.c src/execute3_cd.c src/execute4_pwd.c \
 			src/execute5_exit.c src/execute6_env_unset.c  src/execute7_export.c \
 			src/execute8_echo.c src/execute9_files.c \
-			src/signals.c \
+			src/signals1.c src/signals2.c \
 			src/error.c \
-			#src/create_cmd.s
-
-
+			src/execute_helpers.c \
+	
 
 LIBFT		= ./lib
 LIBFT_LIB	= $(LIBFT)/libft.a

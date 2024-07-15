@@ -42,13 +42,6 @@ void	sigquit_child_handler(int signum)
 	}
 }
 
-/* Handle ctrl-D (EOF) to exit the shell */
-void	handle_eof(void)
-{
-	printf("exit\n");
-	exit(0);
-}
-
 void	setup_signal_handlers(void)
 {
 	struct sigaction	sa_int;

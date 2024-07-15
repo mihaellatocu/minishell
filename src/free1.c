@@ -115,31 +115,3 @@ void	cleaning_args(t_lst **nodes)
 		current = tmp;
 	}
 }
-
-/*Free alloc malloc pipes*/
-void	free_allocation_malloc_pipes(t_shell *p)
-{
-	int	i;
-
-	i = 0;
-	while (i < p->nr_cmds)
-	{
-		free(p->pipes[i]);
-		i++;
-	}
-	free(p->pipes);
-	p->pipes = NULL;
-	free(p->pid);
-	p->pid = NULL;
-}
-
-/*This function calls all functions to free memory allocated*/
-void	free_all_memory(t_shell *p)
-{
-	free_allocation_malloc(&p->token_list, p->line);
-	p->token_list = NULL;
-	p->line = NULL;
-	free_allocation_malloc_pipes(p);
-	free_allocation_malloc_env(&p->envir);
-	p->envir = NULL;
-}
