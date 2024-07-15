@@ -182,7 +182,7 @@ void					redirection_error(t_lst *current);
 void					free_allocation_malloc_pipes(t_shell *p);
 void					free_all_memory(t_shell *p);
 
-
+int	open_fd_solo_cmd(t_shell *p, t_lst *cmd);
 // t_token	find_token(char *str, size_t *i);
 // bool	operator(int c);
 #endif
