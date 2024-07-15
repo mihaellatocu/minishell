@@ -161,6 +161,12 @@ void					find_dollar_sign_and_replace(t_shell *p);
 int						ft_find_dollar(char *str, char **word, int i);
 void					find_duplicate_env(t_env_list *head_env_list);
 void					delete_env_dups(t_env_list **nodes);
+void					allocate_pipe_memory(t_shell *p);
+int						find_path(t_lst *cmd, t_env_list *env, int i);
+void					set_redirection(t_lst *cmd, t_shell *p, int i);
+void					free_env_vars_from_child(char **list);
+void					close_all_pipes(t_shell *p);
+char					*find_path_in_env(t_env_list *env);
 
 /* Signals */
 void					setup_signal_handlers(void);

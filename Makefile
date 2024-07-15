@@ -12,7 +12,9 @@ SRCS	= src/minishell.c \
 			src/redirections2_dollar.c src/redirections_helper.c \
 			src/list_init_file.c \
 			src/1.parsing.c src/1.parsing2.c \
-			src/execute1.c src/execute2.c src/execute3_cd.c src/execute4_pwd.c \
+			src/execute1.c src/execute1_find_path.c src/execute1_find_path_helper.c \
+			src/execute2_buildin_cmds.c \
+			src/execute3_cd.c src/execute4_pwd.c \
 			src/execute5_exit.c src/execute6_env_unset.c  src/execute7_export.c \
 			src/execute8_echo.c src/execute9_files.c \
 			src/signals1.c src/signals2.c \
