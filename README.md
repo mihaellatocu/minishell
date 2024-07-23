@@ -44,7 +44,7 @@ make fclean
 ```bash
 make re
 ```
-- **Usage**  
+**Usage**  
 - Run the shell by executing:
 
 ```bash
