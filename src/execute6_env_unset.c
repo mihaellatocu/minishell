@@ -25,8 +25,11 @@ int	handle_env_cmd(t_shell *p, t_lst *cmd)
 int	handle_unset_cmd(t_shell *p, t_lst *cmd)
 {
 	t_env_list	*current;
+	int			original_stdout;
 
 	current = p->envir;
+	original_stdout = open_fd_solo_cmd(p, cmd);
+	dup2(original_stdout, STDOUT_FILENO);
 	while (current != NULL)
 	{
 		if (cmd->args[1] && ft_strncmp(current->key, cmd->args[1],

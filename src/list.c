@@ -71,7 +71,7 @@ int	count_cmd(t_lst	*nodes)
 	return (count);
 }
 
-void	print_list(t_lst *nodes)
+/*void	print_list(t_lst *nodes)
 {
 	t_lst	*current;
 	int		i;
@@ -97,7 +97,7 @@ void	print_list(t_lst *nodes)
 				printf("   args: %s\n", current->args[i]);
 		current = current->next;
 	}
-}
+}*/
 
 void	print_files(t_file *file)
 {
@@ -111,7 +111,7 @@ void	print_files(t_file *file)
 		current = current->next;
 	}
 }
-
+/*
 void	print_list_cmd(t_lst *nodes)
 {
 	t_lst	*current;
@@ -137,6 +137,7 @@ void	print_list_cmd(t_lst *nodes)
 		current = current->next;
 	}
 }
+*/
 
 void	print_env(t_env_list *nodes)
 {

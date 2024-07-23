@@ -14,7 +14,8 @@
 
 /*manipulate the string from token list, removing the $env/word and replace 
 it with value of the matching key*/
-static char	*create_new_wd(char *current_word, char *env, char *to_replace, int start)
+static char	*create_new_wd(char *current_word, char *env,
+	char *to_replace, int start)
 {
 	int		i;
 	int		j;
@@ -77,46 +78,12 @@ int	count_how_many_dollar_signs(char *str)
 	ctr = 0;
 	while (str[i] != '\0')
 	{
-		if (str[i] == '$' && str[i + 1] != '\0' && ((ft_isalpha(str[i + 1]) || str[i + 1] == '_' || str[i + 1] == '?')))
+		if (str[i] == '$' && str[i + 1] != '\0' && ((ft_isalpha(str[i + 1])
+					|| str[i + 1] == '_' || str[i + 1] == '?')))
 			ctr++;
 		i++;
 	}
 	return (ctr);
-}
-
-/*serching for the $ char and returning its position*/
-int	ft_find_dollar(char *str, char **word, int i)
-{
-	int	start;
-	int	end;
-
-	while (str[++i])
-	{
-		if (str[i + 1] != '\0' && str[i] == '$' && str[i + 1] == '?')
-		{
-			*word = ft_strdup("$?");
-			return (i);
-		}
-	}
-	i = -1;
-	start = -1;
-	while (str[++i] != '\0')
-	{
-		if (str[i] == '$' && str[i + 1] != '\0' && (str[i + 1] == '_' || \
-		ft_isalpha(str[i + 1]) || str[i + 1] == '?'))
-		{
-			start = i + 1;
-			break ;
-		}
-	}
-	end = start;
-	if (start != -1)
-	{
-		while (ft_isalnum(str[end]) || str[end] == '_')
-			end++;
-		*word = ft_substr(str, start, end - start);
-	}
-	return (--start);
 }
 
 void	find_dollar_sign_and_replace(t_shell *p)

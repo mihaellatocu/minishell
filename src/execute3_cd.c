@@ -44,8 +44,13 @@ int	handle_cd_cmd(t_shell *p, t_lst *cmd)
 	char	*home;
 	char	*dir;
 	int		num_args;
+	int		original_stdout;
 
 	dir = cmd->args[1];
+	original_stdout = open_fd_solo_cmd(p, cmd);
+	dup2(original_stdout, STDOUT_FILENO);
+	if (original_stdout == -2)
+		return (1);
 	num_args = count_args(cmd->args);
 	if (num_args > 2)
 		return (write(2, "cd: too many arguments\n", 24), 1);

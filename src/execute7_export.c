@@ -41,20 +41,12 @@ bool	find_equal(char *str, int *pos)
 	return (false);
 }
 
-void	free_temporary_vars(char **key, char **variable)
-{
-	free(*key);
-	free(*variable);
-	*key = NULL;
-	*variable = NULL;
-}
-
 //find key and value 
 int	find_key_value(char *arg, char **key, char **value, int pos_equal)
 {
 	int		start;
 
-	start = pos_equal -1;
+	start = pos_equal - 1;
 	while (start > 0 && (ft_isalnum(arg[start]) || arg[start] == '_'))
 		start--;
 	if (start != 0)
@@ -74,8 +66,6 @@ int	find_key_value(char *arg, char **key, char **value, int pos_equal)
 		}
 		else
 			*value = ft_strdup("");
-		printf("key: %s\n", *key);
-		printf("value: %s\n", *value);
 		return (0);
 	}
 }
@@ -126,6 +116,9 @@ int	handle_export_cmd(t_shell *p, t_lst *cmd)
 			ft_putstr_fd(cmd->args[1], 2);
 			ft_putstr_fd(": not a valid identifier\n", 2);
 		}
+		cleaning_args(&p->token_list);
+		find_duplicate_env(p->envir);
+		delete_env_dups(&p->envir);
 	}
 	p->error = false;
 	return (p->command_status);

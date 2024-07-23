@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:24:07 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/06 15:58:42 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/11 14:44:54 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,15 @@ typedef enum e_cmd_structure
 
 typedef struct s_file
 {
-	int				fd;
-	char			*name; // name of the file
-	t_token			token;
-	struct s_file	*next;
-	struct s_file	*prev;
+	int					fd;
+	char				*name;
+	t_token				token;
+	struct s_file		*next;
+	struct s_file		*prev;
 }			t_file;
 
-typedef struct s_lst //linked lists of tokens and args
+//linked lists of tokens and args
+typedef struct s_lst
 {
 	char				*content;
 	t_token				token; //enum tokens
@@ -88,12 +89,12 @@ typedef struct s_env_list
 
 }			t_env_list;
 
-typedef struct s_shell // stuctura
+typedef struct s_shell
 {
 	int					fd[2];
 	bool				run;
-	t_lst				*token_list; // linked lists of tokens
-	t_env_list			*envir; //lists of environments
+	t_lst				*token_list;
+	t_env_list			*envir;
 	bool				error;
 	int					command_status;
 	int					nr_cmds;
@@ -101,87 +102,97 @@ typedef struct s_shell // stuctura
 	int					prev_pipe;
 	int					null_fd;
 	pid_t				*pid;
+	char				*line;
 }				t_shell;
 
-void		init(t_shell *p, char **envp, int argc, char **argv);
-t_lst		*split_into_tokens(char *line, t_shell *p);
-void		manage_input(t_shell *p);
-
-// char		*find_path(char *cmd, char **envp);
-// void		execute(char *argv, char **envp);
+void					init(t_shell *p, char **envp, int argc, char **argv);
+t_lst					*split_into_tokens(char *line, t_shell *p);
+void					manage_input(t_shell *p, int i, int arg_count);
+char					*find_word(char *s, size_t *i, t_token token);
+bool					is_operator(t_lst *current);
 
 /*create and manage the lists*/
-void		lstadd_back(t_lst **lst, t_lst *new);
-t_lst		*lstnew(char *content, t_token token);
+void					lstadd_back(t_lst **lst, t_lst *new);
+t_lst					*lstnew(char *content, t_token token);
 
 /*free main list and args*/
-void		free_allocation_malloc(t_lst **nodes, char *line);
-void		cleaning_args(t_lst **nodes);
+void					free_allocation_malloc(t_lst **nodes, char *line);
+void					cleaning_args(t_lst **nodes);
 
 //void	init_env(t_shell *p, char **envp); // init env list
-t_env_list	*env_lstnew(char *value, char *key);
-void		env_lstadd_back(t_env_list **lst, t_env_list *new);
-void		free_allocation_malloc_env(t_env_list **nodes);
-void		print_list(t_lst *nodes);
-void		print_env(t_env_list *nodes);
+t_env_list				*env_lstnew(char *value, char *key);
+void					env_lstadd_back(t_env_list **lst, t_env_list *new);
+void					free_allocation_malloc_env(t_env_list **nodes);
+void					print_list(t_lst *nodes);
+void					print_env(t_env_list *nodes);
 
 /*find CMD ARG and Operators for INFILE and OUTFILE*/
-void		set_command_structure(t_lst *node, bool found_cmd);
+void					set_command_structure(t_lst *node, bool found_cmd);
 
-void		find_redirections(t_lst *node);
-int			assign_redirection(t_lst *node, t_lst *command);
-t_lst		*find_closer_command(t_lst *command);
+void					find_redirections(t_lst *node, t_shell *p);
+int						assign_redirection(t_lst *node, t_lst *command);
+t_lst					*find_closer_command(t_lst *command);
 
 /*managing file list*/
-t_file		*file_lstnew(t_token token, char *name, int fd);
-void		file_lstadd_back(t_file **list_of_files, t_file *new_file);
-int			file_lstsize(t_file *list);
-int			env_lstsize(t_env_list *lst);
-
-bool		is_infile_redirection(t_lst *current);
-bool		is_outfile_redirection(t_lst *current);
-void		print_list_cmd(t_lst *nodes);
-
-int			count_cmd(t_lst	*nodes);
+t_file					*file_lstnew(t_token token, char *name, int fd);
+void					file_lstadd_back(t_file **list_of_files, \
+							t_file *new_file);
+int						file_lstsize(t_file *list);
+int						env_lstsize(t_env_list *lst);
+bool					is_infile_redirection(t_lst *current);
+bool					is_outfile_redirection(t_lst *current);
+//void					print_list_cmd(t_lst *nodes);
+int						count_cmd(t_lst	*nodes);
 
 //execute functions
-void		execute(t_shell *p);
-int			handle_build_in(t_shell *p, t_lst *command);
-char		*find_home_env(t_shell *p);
-int			count_args(char	**args_from_a_node);
-int			handle_cd_cmd(t_shell *p, t_lst *cmd);
-
-bool		is_build_in_cmd(t_lst *node);
-int			handle_pwd_cmd(t_shell *p, t_lst *cmd);
-int			handle_exit_cmd(t_shell *p, t_lst *cmd);
-int			handle_env_cmd(t_shell *p, t_lst *cmd);
-int			handle_unset_cmd(t_shell *p, t_lst *cmd);
-int			handle_export_cmd(t_shell *p, t_lst *cmd);
-int			handle_echo_cmd(t_shell *p, t_lst *cmd);
-
-void		find_dollar_sign_and_replace(t_shell *p);
+void					execute(t_shell *p);
+int						handle_build_in(t_shell *p, t_lst *command);
+char					*find_home_env(t_shell *p);
+int						count_args(char	**args_from_a_node);
+int						handle_cd_cmd(t_shell *p, t_lst *cmd);
+bool					is_build_in_cmd(t_lst *node);
+int						handle_pwd_cmd(t_shell *p, t_lst *cmd);
+int						handle_exit_cmd(t_shell *p, t_lst *cmd);
+int						handle_env_cmd(t_shell *p, t_lst *cmd);
+int						handle_unset_cmd(t_shell *p, t_lst *cmd);
+int						handle_export_cmd(t_shell *p, t_lst *cmd);
+int						handle_echo_cmd(t_shell *p, t_lst *cmd);
+void					find_dollar_sign_and_replace(t_shell *p);
+int						ft_find_dollar(char *str, char **word, int i);
+void					find_duplicate_env(t_env_list *head_env_list);
+void					delete_env_dups(t_env_list **nodes);
+void					allocate_pipe_memory(t_shell *p);
+int						find_path(t_lst *cmd, t_env_list *env, int i);
+void					set_redirection(t_lst *cmd, t_shell *p, int i);
+void					free_env_vars_from_child(char **list);
+void					close_all_pipes(t_shell *p);
+char					*find_path_in_env(t_env_list *env);
 
 /* Signals */
-void		setup_signal_handlers(void);
-void		setup_child_signal_handlers(void);
-void		handle_eof(void);
-void		handle_sigint(int sig);
-void		sigint_child_handler(int signum);
-void		sigquit_child_handler(int signum);
+void					setup_signal_handlers(void);
+void					setup_child_signal_handlers(void);
+void					handle_eof(void);
+void					handle_sigint(int sig);
+void					sigint_child_handler(int signum);
+void					sigquit_child_handler(int signum);
 
 /*Infile and Outfile*/
-int			outfile(t_lst *cmd);
-int			ft_strcmp(const char *s1, const char *s2);
-void		read_from_terminal(t_lst *cmd, int fd_in, char *delimiter);
-int			infile(t_lst *cmd);
-
+int						outfile(t_lst *cmd);
+int						ft_strcmp(const char *s1, const char *s2);
+void					read_from_terminal(t_lst *cmd, int fd_in, \
+							char *delimiter);
+int						infile(t_lst *cmd);
+int						open_fd_solo_cmd(t_shell *p, t_lst *cmd);
 
 /*Errors*/
-void		ft_malloc_error(void);
-void		ft_fork_error(void);
-int			error_execve(char *str);
+void					ft_malloc_error(void);
+void					ft_fork_error(void);
+int						error_execve(char *str);
+void					redirection_error(t_lst *current);
 
 //free
-void		free_allocation_malloc_pipes(t_shell *p);
+void					free_allocation_malloc_pipes(t_shell *p);
+void					free_all_memory(t_shell *p);
+void					free_temporary_vars(char **key, char **variable);
 
 #endif

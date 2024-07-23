@@ -12,6 +12,40 @@
 
 #include "minishell.h"
 
+/*This Function open all the infile and outile for the command*/
+void	open_fd(t_lst *cmd, t_shell *p)
+{
+	if (infile(cmd) == 0)
+	{
+		if (outfile(cmd) == -1)
+		{
+			p->command_status = 1;
+			cmd->run = false;
+		}
+	}
+	else
+	{
+		p->command_status = 1;
+		cmd->run = false;
+	}
+}
+
+int	open_fd_solo_cmd(t_shell *p, t_lst *cmd)
+{
+	int	original_stdout;
+
+	original_stdout = dup(STDOUT_FILENO);
+	if (p->nr_cmds == 1)
+	{
+		open_fd(cmd, p);
+		if (cmd->run == false)
+			return (-2);
+		if (cmd->fd_out != STDOUT_FILENO)
+			dup2(cmd->fd_out, STDOUT_FILENO);
+	}
+	return (original_stdout);
+}
+
 /*Check if it's only one command and if that command is built in*/
 bool	is_build_in_cmd(t_lst *node)
 {

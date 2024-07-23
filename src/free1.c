@@ -6,7 +6,7 @@
 /*   By: mtocu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:19:41 by mtocu             #+#    #+#             */
-/*   Updated: 2024/07/06 13:47:01 by mtocu            ###   ########.fr       */
+/*   Updated: 2024/07/11 13:48:48 by mtocu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	free_arg_contents(char **args)
 		i++;
 	}
 	free(args);
+	unlink(".here_doc");
 }
 
 static void	free_files(t_file *file)
@@ -113,21 +114,4 @@ void	cleaning_args(t_lst **nodes)
 		}
 		current = tmp;
 	}
-}
-
-/*Free alloc malloc pipes*/
-void	free_allocation_malloc_pipes(t_shell *p)
-{
-	int	i;
-
-	i = 0;
-	while (i < p->nr_cmds)
-	{
-		free(p->pipes[i]);
-		i++;
-	}
-	free(p->pipes);
-	p->pipes = NULL;
-	free(p->pid);
-	p->pid = NULL;
 }

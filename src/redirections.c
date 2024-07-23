@@ -28,16 +28,6 @@ static bool	is_out_redirection(t_lst *prev)
 	return (false);
 }
 
-/*Check if the token is an operator*/
-static bool	is_operator(t_lst *current)
-{
-	if (current->token == DLESS || current->token == LESS ||
-		current->token == DGREAT || current->token == GREAT ||
-		current->token == PIPE)
-		return (true);
-	return (false);
-}
-
 bool	is_infile_redirection(t_lst *current)
 {
 	if (current->token == DLESS || current->token == LESS)
